@@ -24,7 +24,7 @@ function ActiveLink({
 
   const handleClick = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Add this line
+    e.stopPropagation();
     onClick(href);
   };
 

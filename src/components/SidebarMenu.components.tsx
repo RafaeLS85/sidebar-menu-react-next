@@ -42,7 +42,7 @@ export const CollapsedDiv = ({
 }: {
   children: React.ReactNode;
   style: React.CSSProperties;
-  onClick: (event: React.MouseEvent<HTMLDivElement>) => void; // Updated type
+  onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
   onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
 }) => {

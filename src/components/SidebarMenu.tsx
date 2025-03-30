@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState, useReducer, useEffect, ReactNode } from "react";
 import {
   Wrapper,
   Sidebar,
@@ -22,34 +22,82 @@ import ActiveLink from "./ActiveLink";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 import BarsIcon from "./icons/BarsIcon";
 import CloseIcon from "./icons/CloseIcon";
-import { MenuItem, useMenuStore } from "../store/menu";
 import usePermissionOnMenu from "./usePermissionOnMenu";
 
-// export interface SidebarMenuItem extends MenuItem {}; // Remove this line
-type SidebarMenuItem = MenuItem; // Add this line
+export interface MenuItem {
+  name: string;
+  isOpen?: boolean;
+  href?: string;
+  permissions?: string[];
+  icon?: ReactNode;
+  submenu?: MenuItem[];
+}
+
+interface MenuState {
+  isOpenMenu: boolean;
+  items: MenuItem[];
+}
+
+type MenuAction =
+  | { type: 'TOGGLE_MENU' }
+  | { type: 'TOGGLE_SUBMENU'; payload: string }
+  | { type: 'UPDATE_ITEMS'; payload: MenuItem[] };
+
+const menuReducer = (state: MenuState, action: MenuAction): MenuState => {
+  switch (action.type) {
+    case 'TOGGLE_MENU':
+      return { ...state, isOpenMenu: !state.isOpenMenu };
+    case 'TOGGLE_SUBMENU':
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.name === action.payload
+            ? { ...item, isOpen: !item.isOpen }
+            : item,
+        ),
+      };
+    case 'UPDATE_ITEMS':
+      return { ...state, items: action.payload };
+    default:
+      return state;
+  }
+};
 
 type SidebarMenuProps = {
   handleNavigation: (href: string) => void;
   isActive: (href: string, isSubmenu?: boolean) => boolean;
-  items: SidebarMenuItem[];
+  items: MenuItem[];
 };
 
 const SidebarMenu = ({ handleNavigation, isActive, items }: SidebarMenuProps) => {
-  const setOpenMenu = useMenuStore((state) => state.setOpenMenu);
-  const updateList = useMenuStore((state) => state.updateList);
-  const isOpenMenu = useMenuStore((state) => state.isOpenMenu);
-  const hasPermission = usePermissionOnMenu();
-  const menuItems = useMenuStore((state) => state.items);
+  const [state, dispatch] = useReducer(menuReducer, {
+    isOpenMenu: true,
+    items: items,
+  });
+  const { isOpenMenu, items: menuItems } = state;
+  const checkPermission = usePermissionOnMenu();
 
   useEffect(() => {
-    useMenuStore.setState((state) => ({ ...state, items: items }));
+    dispatch({ type: 'UPDATE_ITEMS', payload: items });
   }, [items]);
+
+  const toggleMenu = () => {
+    dispatch({ type: 'TOGGLE_MENU' });
+  };
+
+  const toggleSubmenu = (itemName: string) => {
+    dispatch({ type: 'TOGGLE_SUBMENU', payload: itemName });
+  };
+
+  const updateList = (item: MenuItem) => {
+    toggleSubmenu(item.name);
+  };
 
   return (
     <Wrapper>
       <Sidebar isOpenMenu={isOpenMenu}>
         <SidebarTop isOpenMenu={isOpenMenu}>
-          <SidebarLogo onClick={() => setOpenMenu(!isOpenMenu)}>
+          <SidebarLogo onClick={toggleMenu}>
             {isOpenMenu ? <BarsIcon data-id="barsIcon" /> : <CloseIcon data-id="closeButton" />}
           </SidebarLogo>
           <LogoName isOpenMenu={isOpenMenu}>Cerrar</LogoName>
@@ -64,9 +112,9 @@ const SidebarMenu = ({ handleNavigation, isActive, items }: SidebarMenuProps) =>
             <li key={item.name}>
               {!item.submenu && (
                 <ActiveLink
-                  href={item.href || ""} // Add default value
+                  href={item.href || ""}
                   isOpenMenu={isOpenMenu}
-                  hasPermission={hasPermission(item.permissions || [])} // Add default value
+                  hasPermission={checkPermission(item.permissions || [])}
                   onClick={handleNavigation}
                   isActive={isActive}
                 >
@@ -78,7 +126,6 @@ const SidebarMenu = ({ handleNavigation, isActive, items }: SidebarMenuProps) =>
                 <SubMenu
                   item={item}
                   isOpenMenu={isOpenMenu}
-                  setOpenMenu={setOpenMenu}
                   updateList={updateList}
                   handleNavigation={handleNavigation}
                   isActive={isActive}
@@ -107,9 +154,8 @@ const SubMenuButton = ({ active, isOpenMenu }: SubMenuButtonProps) => {
 };
 
 type SubMenuProps = {
-  item: SidebarMenuItem;
+  item: MenuItem;
   isOpenMenu: boolean;
-  setOpenMenu: (open: boolean) => void;
   updateList: (item: MenuItem) => void;
   handleNavigation: (href: string) => void;
   isActive: (href: string, isSubmenu?: boolean) => boolean;
@@ -118,18 +164,14 @@ type SubMenuProps = {
 const SubMenu = ({
   item,
   isOpenMenu,
-  setOpenMenu,
   updateList,
   handleNavigation,
   isActive,
 }: SubMenuProps) => {
-  const isSubmenuActive = isActive(item.href || "", isOpenMenu); // Add default value
-  const isMainElementActive = isActive(item.href || ""); // Add default value
+  const isSubmenuActive = isActive(item.href || "", isOpenMenu);
+  const isMainElementActive = isActive(item.href || "");
   const hasPermission = usePermissionOnMenu();
-
-  const itemIsOpen = useMenuStore((state) =>
-    state.items.find((i) => i.name === item.name)?.isOpen,
-  );
+  const itemIsOpen = item.isOpen;
 
   const collapsedDivStyle = {
     ...styles.collapsedDiv,
@@ -155,7 +197,7 @@ const SubMenu = ({
   };
 
   return (
-    <span onClick={() => setOpenMenu(!isOpenMenu)}>
+    <span onClick={() => {}}>
       <CollapsedDiv
         onClick={(event) => {
           event.stopPropagation();
@@ -166,7 +208,7 @@ const SubMenu = ({
         onMouseLeave={handleMouseLeave}
       >
         <SidebarIcon>{item.icon}</SidebarIcon>
-        <SubMenuMainTitle isMainElementActive={isMainElementActive} isOpenMenu={isOpenMenu}> {/* Add isOpenMenu */}
+        <SubMenuMainTitle isMainElementActive={isMainElementActive} isOpenMenu={isOpenMenu}>
           {item.name}
         </SubMenuMainTitle>
         <SubMenuButton active={itemIsOpen} isOpenMenu={isOpenMenu} />
@@ -176,10 +218,10 @@ const SubMenu = ({
         item.submenu?.map((submenu) => (
           <span key={submenu.name}>
             <ActiveLink
-              href={submenu.href || ""} // Add default value
+              href={submenu.href || ""}
               key={submenu.name}
               isOpenMenu={isOpenMenu}
-              hasPermission={hasPermission(submenu.permissions || [])} // Add default value
+              hasPermission={hasPermission(submenu.permissions || [])}
               isSubmenu={true}
               onClick={handleNavigation}
               isActive={isActive}
