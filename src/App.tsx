@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SidebarMenu from "./components/SidebarMenu";
-import { FaHome, FaUsers, FaCog, FaBook, FaEnvelope, FaLock } from "react-icons/fa"; // Example icons
+import { FaHome, FaUsers, FaCog, FaBook, FaEnvelope, FaLock } from "react-icons/fa";
 
 function App() {
   const [activeLink, setActiveLink] = useState<string>("/");
@@ -31,10 +31,10 @@ function App() {
       permissions: ["admin"],
     },
     {
-      name: "Hidden Item", // This item will be hidden
+      name: "Hidden Item",
       href: "/hidden",
       icon: <FaLock />,
-      permissions: ["superadmin"], // Only superadmin can see this
+      permissions: ["superadmin"],
     },
     {
       name: "Settings",
@@ -56,10 +56,10 @@ function App() {
           permissions: ["admin"],
         },
         {
-          name: "Hidden Submenu", // This submenu will be hidden
+          name: "Hidden Submenu",
           href: "/settings/hidden",
           icon: <FaLock />,
-          permissions: ["superadmin"], // Only superadmin can see this
+          permissions: ["superadmin"],
         },
       ],
     },

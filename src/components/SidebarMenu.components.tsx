@@ -33,7 +33,19 @@ export const SubmenuName = ({ children, isOpenMenu }: { children: React.ReactNod
   return <span style={{ ...styles.submenuName, display: isOpenMenu ? "none" : "" }}>{children}</span>;
 };
 
-export const CollapsedDiv = ({ children, style, onClick, onMouseEnter, onMouseLeave }: { children: React.ReactNode, style: React.CSSProperties, onClick: () => void, onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void, onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void }) => {
+export const CollapsedDiv = ({
+  children,
+  style,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  children: React.ReactNode;
+  style: React.CSSProperties;
+  onClick: (event: React.MouseEvent<HTMLDivElement>) => void; // Updated type
+  onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) => {
   return (
     <div
       onClick={onClick}
@@ -54,8 +66,8 @@ export const ArrowWrapper = ({ children }: { children: React.ReactNode }) => {
   return <span style={styles.arrowWrapper}>{children}</span>;
 };
 
-export const SubMenuMainTitle = ({ children, isMainElementActive }: { children: React.ReactNode, isMainElementActive: boolean }) => {
-  return <span style={{ ...styles.subMenuMainTitle, fontWeight: isMainElementActive ? "500" : "400" }}>{children}</span>;
+export const SubMenuMainTitle = ({ children, isMainElementActive, isOpenMenu }: { children: React.ReactNode, isMainElementActive: boolean, isOpenMenu: boolean }) => { // Add isOpenMenu
+  return <span style={{ ...styles.subMenuMainTitle, fontWeight: isMainElementActive ? "500" : "400", display: isOpenMenu ? "none" : "" }}>{children}</span>; // Add display: isOpenMenu ? "none" : ""
 };
 
 export const Divider = ({ isOpenMenu }: { isOpenMenu: boolean }) => {

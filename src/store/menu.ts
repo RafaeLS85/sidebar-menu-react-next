@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 
-interface MenuItem {
+export interface MenuItem {
   name: string;
-  isOpen?: boolean; // Add the isOpen property here
-  href?: string;
-  permissions?: string[];
+  isOpen?: boolean;
+  href?: string; // Make href optional
+  permissions?: string[]; // Make permissions optional
   icon?: React.ReactNode;
   submenu?: MenuItem[];
 }
@@ -16,16 +16,23 @@ interface MenuState {
   items: MenuItem[];
 }
 
-export const useMenuStore = create<MenuState>((set) => ({
+export const useMenuStore = create<MenuState>((set, get) => ({
   isOpenMenu: true,
   setOpenMenu: (open) => set({ isOpenMenu: open }),
   items: [],
-  updateList: (item) =>
-    set((state) => ({
-      ...state,
-      isOpenMenu: state.isOpenMenu,
-      items: state.items.map((i) =>
+  updateList: (item) => {
+    console.log("updateList - Input Item:", item);
+    const currentState = get();
+    console.log("updateList - Current State:", currentState);
+    set((state) => {
+      const updatedItems = state.items.map((i) =>
         i.name === item.name ? { ...i, isOpen: !i.isOpen } : i,
-      ),
-    })),
+      );
+      console.log("updateList - Updated Items:", updatedItems);
+      return {
+        ...state,
+        items: updatedItems,
+      };
+    });
+  },
 }));
