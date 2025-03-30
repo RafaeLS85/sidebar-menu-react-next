@@ -4,18 +4,18 @@ A customizable and responsive sidebar menu component for React ande Next applica
 
 ## Installation
 
-You can install the `sidebar-fvg` package using npm or yarn:
+You can install the `sidebar-menu-fvg` package using npm or yarn:
 
 **npm:**
 
 ```bash
-npm install sidebar-fvg
+npm install sidebar-menu-fvg
 ```
 
 ```jsx
 
 import React, { useState } from 'react';
-import SidebarMenu, { MenuItem } from 'sidebar-fvg';
+import SidebarMenu, { MenuItem } from 'sidebar-menu-fvg';
 import { FaHome, FaUser, FaCog } from 'react-icons/fa'; // Example icons
 
 function App() {
@@ -89,7 +89,7 @@ export default App;
 'use client'; // This is important for client-side navigation
 
 import React, { useState } from 'react';
-import SidebarMenu, { MenuItem } from 'sidebar-fvg';
+import SidebarMenu, { MenuItem } from 'sidebar-menu-fvg';
 import { FaHome, FaUser, FaCog } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 
@@ -162,7 +162,7 @@ export default function AppRouterExample() {
 
 ```jsx
 import React, { useState } from 'react';
-import SidebarMenu, { MenuItem } from 'sidebar-fvg';
+import SidebarMenu, { MenuItem } from 'sidebar-menu-fvg';
 import { FaHome, FaUser, FaCog } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 
