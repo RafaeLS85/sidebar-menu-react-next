@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface SidebarItem {
+export interface SidebarItem {
     name: string;
     href: string;
     icon: React.ReactNode;
@@ -18,3 +18,4 @@ interface SidebarMenuProps {
 declare const SidebarMenu: React.FC<SidebarMenuProps>;
 
 export default SidebarMenu;
+export type MenuItem = SidebarItem;
