@@ -4,20 +4,20 @@ const webpack = require('webpack');
 
 module.exports = {
   mode: "production",
-  entry: "./src/index.js", // Cambiado a index.js
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "build"), // Usa __dirname
+    path: path.resolve(__dirname, "build"),
     filename: "index.js",
-    libraryTarget: "commonjs2", // Cambiado a commonjs2 si es necesario para CommonJS
+    libraryTarget: "commonjs2",
     library: {
       name: 'sidebar-menu-fvg',
-      type: 'commonjs2', // Modificado para CommonJS2
+      type: 'commonjs2',
     },
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/, // Añadido soporte para TS/TSX
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         loader: "babel-loader"
       },
@@ -33,7 +33,7 @@ module.exports = {
     "react-icons": "react-icons"
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx'], // Añadido soporte para TS/TSX
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
     fallback: {
       fs: false,
       stream: require.resolve('stream-browserify'),
