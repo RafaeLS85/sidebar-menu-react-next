@@ -1,10 +1,4 @@
-import { CSSProperties } from 'react';
-
-interface StyleObject {
-  [key: string]: CSSProperties;
-}
-
-export const styles: StyleObject = {
+export const styles = {
   styledLink: {
     fontFamily: 'Roboto',
     fontSize: '14px',
@@ -124,14 +118,14 @@ export const styles: StyleObject = {
   },
 };
 
-export const getIconColor = (active: boolean) => {
+export const getIconColor = (active) => {
   return active ? '#5A2DB2' : '#65657E';
 };
 
-export const getDividerWidth = (isOpen: boolean) => {
+export const getDividerWidth = (isOpen) => {
   return isOpen ? '55px' : '248px';
 };
 
-export const getPointerEvents = (hasPermission: boolean) => {
+export const getPointerEvents = (hasPermission) => {
   return hasPermission ? 'auto' : 'none';
 };

@@ -1,15 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { getPointerEvents, styles } from "./SidebarMenu.styled";
-
-type Props = {
-  children: React.ReactNode;
-  href: string;
-  isOpenMenu: boolean;
-  hasPermission: boolean;
-  isSubmenu?: boolean;
-  onClick: (href: string) => void;
-  isActive: (href: string, isSubmenu?: boolean) => boolean;
-};
 
 function ActiveLink({
   children,
@@ -19,10 +10,10 @@ function ActiveLink({
   isSubmenu = false,
   onClick,
   isActive,
-}: Props) {
+}) {
   const active = isActive(href, isSubmenu);
 
-  const handleClick = (e: React.SyntheticEvent) => {
+  const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     onClick(href);
@@ -39,7 +30,7 @@ function ActiveLink({
     pointerEvents: getPointerEvents(hasPermission),
   };
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseEnter = (e) => {
     if (!active) {
       e.currentTarget.style.backgroundColor = styles.styledLinkHover.backgroundColor;
       e.currentTarget.style.fontWeight = styles.styledLinkHover.fontWeight;
@@ -47,7 +38,7 @@ function ActiveLink({
     }
   };
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseLeave = (e) => {
     if (!active) {
       e.currentTarget.style.backgroundColor = '';
       e.currentTarget.style.fontWeight = '';
@@ -68,5 +59,15 @@ function ActiveLink({
     </a>
   );
 }
+
+ActiveLink.propTypes = {
+  children: PropTypes.node.isRequired,
+  href: PropTypes.string.isRequired,
+  isOpenMenu: PropTypes.bool.isRequired,
+  hasPermission: PropTypes.bool.isRequired,
+  isSubmenu: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  isActive: PropTypes.func.isRequired,
+};
 
 export default ActiveLink;

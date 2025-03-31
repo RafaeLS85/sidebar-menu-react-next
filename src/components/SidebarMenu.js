@@ -1,6 +1,5 @@
-"use client";
-
-import React, { useState, useReducer, useEffect, ReactNode } from "react";
+import React, { useState, useReducer, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   Wrapper,
   Sidebar,
@@ -24,52 +23,25 @@ import BarsIcon from "./icons/BarsIcon";
 import CloseIcon from "./icons/CloseIcon";
 import usePermissionOnMenu from "./usePermissionOnMenu";
 
-export interface MenuItem {
-  name: string;
-  isOpen?: boolean;
-  href?: string;
-  permissions?: string[];
-  icon?: ReactNode;
-  submenu?: MenuItem[];
-}
-
-interface MenuState {
-  isOpenMenu: boolean;
-  items: MenuItem[];
-}
-
-type MenuAction =
-  | { type: 'TOGGLE_MENU' }
-  | { type: 'TOGGLE_SUBMENU'; payload: string }
-  | { type: 'UPDATE_ITEMS'; payload: MenuItem[] };
-
-const menuReducer = (state: MenuState, action: MenuAction): MenuState => {
+const menuReducer = (state, action) => {
   switch (action.type) {
-    case 'TOGGLE_MENU':
+    case "TOGGLE_MENU":
       return { ...state, isOpenMenu: !state.isOpenMenu };
-    case 'TOGGLE_SUBMENU':
+    case "TOGGLE_SUBMENU":
       return {
         ...state,
         items: state.items.map((item) =>
-          item.name === action.payload
-            ? { ...item, isOpen: !item.isOpen }
-            : item,
+          item.name === action.payload ? { ...item, isOpen: !item.isOpen } : item
         ),
       };
-    case 'UPDATE_ITEMS':
+    case "UPDATE_ITEMS":
       return { ...state, items: action.payload };
     default:
       return state;
   }
 };
 
-type SidebarMenuProps = {
-  handleNavigation: (href: string) => void;
-  isActive: (href: string, isSubmenu?: boolean) => boolean;
-  items: MenuItem[];
-};
-
-const SidebarMenu = ({ handleNavigation, isActive, items }: SidebarMenuProps) => {
+const SidebarMenu = ({ handleNavigation, isActive, items }) => {
   const [state, dispatch] = useReducer(menuReducer, {
     isOpenMenu: true,
     items: items,
@@ -78,18 +50,18 @@ const SidebarMenu = ({ handleNavigation, isActive, items }: SidebarMenuProps) =>
   const checkPermission = usePermissionOnMenu();
 
   useEffect(() => {
-    dispatch({ type: 'UPDATE_ITEMS', payload: items });
+    dispatch({ type: "UPDATE_ITEMS", payload: items });
   }, [items]);
 
   const toggleMenu = () => {
-    dispatch({ type: 'TOGGLE_MENU' });
+    dispatch({ type: "TOGGLE_MENU" });
   };
 
-  const toggleSubmenu = (itemName: string) => {
-    dispatch({ type: 'TOGGLE_SUBMENU', payload: itemName });
+  const toggleSubmenu = (itemName) => {
+    dispatch({ type: "TOGGLE_SUBMENU", payload: itemName });
   };
 
-  const updateList = (item: MenuItem) => {
+  const updateList = (item) => {
     toggleSubmenu(item.name);
   };
 
@@ -139,13 +111,23 @@ const SidebarMenu = ({ handleNavigation, isActive, items }: SidebarMenuProps) =>
   );
 };
 
-type SubMenuButtonProps = {
-  active?: boolean;
-  isOpenMenu?: boolean;
+SidebarMenu.propTypes = {
+  handleNavigation: PropTypes.func.isRequired,
+  isActive: PropTypes.func.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      isOpen: PropTypes.bool,
+      href: PropTypes.string,
+      permissions: PropTypes.arrayOf(PropTypes.string),
+      icon: PropTypes.node,
+      submenu: PropTypes.array,
+    })
+  ).isRequired,
 };
 
-const SubMenuButton = ({ active, isOpenMenu }: SubMenuButtonProps) => {
-  if (isOpenMenu) return <></>;
+const SubMenuButton = ({ active, isOpenMenu }) => {
+  if (isOpenMenu) return null;
   return (
     <ArrowWrapper>
       {active ? <FaChevronUp size="14px" /> : <FaChevronDown size="14px" />}
@@ -153,21 +135,12 @@ const SubMenuButton = ({ active, isOpenMenu }: SubMenuButtonProps) => {
   );
 };
 
-type SubMenuProps = {
-  item: MenuItem;
-  isOpenMenu: boolean;
-  updateList: (item: MenuItem) => void;
-  handleNavigation: (href: string) => void;
-  isActive: (href: string, isSubmenu?: boolean) => boolean;
+SubMenuButton.propTypes = {
+  active: PropTypes.bool,
+  isOpenMenu: PropTypes.bool,
 };
 
-const SubMenu = ({
-  item,
-  isOpenMenu,
-  updateList,
-  handleNavigation,
-  isActive,
-}: SubMenuProps) => {
+const SubMenu = ({ item, isOpenMenu, updateList, handleNavigation, isActive }) => {
   const isSubmenuActive = isActive(item.href || "", isOpenMenu);
   const isMainElementActive = isActive(item.href || "");
   const hasPermission = usePermissionOnMenu();
@@ -182,30 +155,14 @@ const SubMenu = ({
     backgroundColor: isSubmenuActive ? "#EAE5FF" : "",
   };
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isSubmenuActive) {
-      e.currentTarget.style.backgroundColor = styles.collapsedDivHover.backgroundColor;
-      e.currentTarget.style.height = styles.collapsedDivHover.height;
-    }
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isSubmenuActive) {
-      e.currentTarget.style.backgroundColor = "";
-      e.currentTarget.style.height = "";
-    }
-  };
-
   return (
-    <span onClick={() => {}}>
+    <span>
       <CollapsedDiv
         onClick={(event) => {
           event.stopPropagation();
           updateList(item);
         }}
         style={collapsedDivStyle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
         <SidebarIcon>{item.icon}</SidebarIcon>
         <SubMenuMainTitle isMainElementActive={isMainElementActive} isOpenMenu={isOpenMenu}>
@@ -219,7 +176,6 @@ const SubMenu = ({
           <span key={submenu.name}>
             <ActiveLink
               href={submenu.href || ""}
-              key={submenu.name}
               isOpenMenu={isOpenMenu}
               hasPermission={hasPermission(submenu.permissions || [])}
               isSubmenu={true}
@@ -232,6 +188,14 @@ const SubMenu = ({
         ))}
     </span>
   );
+};
+
+SubMenu.propTypes = {
+  item: PropTypes.object.isRequired,
+  isOpenMenu: PropTypes.bool.isRequired,
+  updateList: PropTypes.func.isRequired,
+  handleNavigation: PropTypes.func.isRequired,
+  isActive: PropTypes.func.isRequired,
 };
 
 export default SidebarMenu;
