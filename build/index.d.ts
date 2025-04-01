@@ -13,6 +13,7 @@ interface SidebarMenuProps {
   handleNavigation: (href: string) => void;
   isActive: (href: string, isSubmenu?: boolean) => boolean;
   items: SidebarItem[];
+  permissions: string[];
 }
 
 declare const SidebarMenu: React.FC<SidebarMenuProps>;
