@@ -297,10 +297,10 @@ SubMenuButton.propTypes = {
   isOpenMenu: PropTypes.bool,
 };
 
-const SubMenu = ({ item, isOpenMenu, updateList, handleNavigation, isActive }) => {
+const SubMenu = ({ item, isOpenMenu, updateList, handleNavigation, isActive, permissions }) => {
   const isSubmenuActive = isActive(item.href || "", isOpenMenu);
   const isMainElementActive = isActive(item.href || "");
-  const hasPermission = usePermissionOnMenu();
+  const hasPermission = usePermissionOnMenu(permissions);
   const itemIsOpen = item.isOpen;
 
   const collapsedDivStyle = {
@@ -353,6 +353,7 @@ SubMenu.propTypes = {
   updateList: PropTypes.func.isRequired,
   handleNavigation: PropTypes.func.isRequired,
   isActive: PropTypes.func.isRequired,
+  permissions: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default SidebarMenu;
