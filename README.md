@@ -97,7 +97,12 @@ export default function MyPage() {
 
   return (
     <div>
-      <SidebarMenu handleNavigation={handleNavigation} isActive={isActive} items={items}/>
+       <SidebarMenu 
+        handleNavigation={handleNavigation} 
+        isActive={isActive} 
+        items={items}
+        permissions={['admin', 'user']} 
+      />
       {/*  */}
     </div>
   );
@@ -158,7 +163,12 @@ function MyComponent() {
 
   return (
     <div>
-      <SidebarMenu handleNavigation={handleNavigation} isActive={isActive} items={items}/>
+      <SidebarMenu 
+        handleNavigation={handleNavigation} 
+        isActive={isActive} 
+        items={items}
+        permissions={['admin', 'user']} 
+      />
       {/* El resto de tu contenido */}
     </div>
   );
