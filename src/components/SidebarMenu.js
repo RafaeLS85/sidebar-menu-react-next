@@ -137,9 +137,16 @@ export const getPointerEvents = (hasPermission) => {
 };
 
 
-export const Wrapper = ({ children }) => <div style={styles.wrapper}>{children}</div>;
+export const Wrapper = ({ children, isOpenMenu }) => (
+  <div style={{ ...styles.wrapper, width: isOpenMenu ? "74px" : "268px" }}>
+    {children}
+  </div>
+);
+
 export const Sidebar = ({ children, isOpenMenu }) => (
-  <aside style={{ ...styles.sidebar, width: isOpenMenu ? "74px" : "268px" }}>{children}</aside>
+  <aside style={{ ...styles.sidebar, width: isOpenMenu ? "74px" : "268px" }}>
+    {children}
+  </aside>
 );
 export const SidebarTop = ({ children, isOpenMenu }) => (
   <div style={{ ...styles.sidebarTop, marginLeft: isOpenMenu ? "" : "1rem" }}>{children}</div>
@@ -214,7 +221,7 @@ const SidebarMenu = ({ handleNavigation, isActive, items }) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper isOpenMenu={isOpenMenu}>
       <Sidebar isOpenMenu={isOpenMenu}>
         <SidebarTop isOpenMenu={isOpenMenu}>
           <SidebarLogo onClick={toggleMenu}>
