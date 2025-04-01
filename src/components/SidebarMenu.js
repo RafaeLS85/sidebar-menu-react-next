@@ -124,6 +124,19 @@ export const styles = {
   },
 };
 
+export const getIconColor = (active) => {
+  return active ? '#5A2DB2' : '#65657E';
+};
+
+export const getDividerWidth = (isOpen) => {
+  return isOpen ? '55px' : '248px';
+};
+
+export const getPointerEvents = (hasPermission) => {
+  return hasPermission ? 'auto' : 'none';
+};
+
+
 export const Wrapper = ({ children }) => <div style={styles.wrapper}>{children}</div>;
 export const Sidebar = ({ children, isOpenMenu }) => (
   <aside style={{ ...styles.sidebar, width: isOpenMenu ? "74px" : "268px" }}>{children}</aside>
