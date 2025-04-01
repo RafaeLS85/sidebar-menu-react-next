@@ -1,27 +1,162 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useReducer, useEffect } from "react";
 import PropTypes from "prop-types";
-import {
-  Wrapper,
-  Sidebar,
-  SidebarTop,
-  SidebarLogo,
-  LogoName,
-  SidebarIcon,
-  SidebarName,
-  SubmenuName,
-  CollapsedDiv,
-  StyledUl,
-  ArrowWrapper,
-  SubMenuMainTitle,
-  Divider,
-} from "./SidebarMenu.components";
-import { styles } from "./SidebarMenu.styled";
-
-import ActiveLink from "./ActiveLink";
-import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-import BarsIcon from "./icons/BarsIcon";
-import CloseIcon from "./icons/CloseIcon";
+import { FaChevronUp, FaChevronDown, FaBars, FaTimes } from "react-icons/fa";
 import usePermissionOnMenu from "./usePermissionOnMenu";
+import ActiveLink from "./ActiveLink";
+
+export const styles = {
+  styledLink: {
+    fontFamily: 'Roboto',
+    fontSize: '14px',
+    fontWeight: '400',
+    textDecoration: 'none',
+    borderRadius: '8px',
+    padding: '0.8rem 1rem',
+    height: '45px',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+  },
+  styledLinkHover: {
+    backgroundColor: '#F0F0FA',
+    fontWeight: '500',
+    height: '45px',
+  },
+  collapsedDiv: {
+    fontFamily: 'Roboto',
+    fontSize: '14px',
+    textDecoration: 'none',
+    borderRadius: '8px',
+    display: 'flex',
+    cursor: 'pointer',
+    height: '45px',
+  },
+  collapsedDivHover: {
+    backgroundColor: '#F0F0FA',
+    height: '45px',
+  },
+  styledUl: {
+    listStyle: 'none',
+    margin: '0px',
+    padding: '0px',
+  },
+  wrapper: {
+    position: 'relative',
+    backgroundColor: '#FAFAFF',
+  },
+  arrowWrapper: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'end',
+  },
+  subMenuMainTitle: {
+    marginLeft: '0.5rem',
+    whiteSpace: 'nowrap',
+  },
+  subMenuMainTitleHover: {
+    fontWeight: '500',
+  },
+  sidebar: {
+    height: '100vh',
+    transition: 'width 200ms',
+    paddingTop: '16px',
+    paddingBottom: '0px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+    position: 'sticky',
+    top: '0',
+  },
+  sidebarLogo: {
+    cursor: 'pointer',
+  },
+  sidebarTop: {
+    width: 'max-content',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    paddingBottom: '1rem',
+    marginLeft: '1rem',
+    height: '40px',
+  },
+  logoName: {
+    color: '#65657E',
+    fontSize: '14px',
+    lineHeight: '3',
+    fontFamily: 'Roboto',
+    fontWeight: '400',
+  },
+  sidebarList: {
+    listStyle: 'none',
+  },
+  divider: {
+    borderBottom: '1px solid #D5D5E7',
+    height: '0.5px',
+  },
+  sidebarIcon: {
+    fontSize: '1.2rem',
+    display: 'inline-block',
+  },
+  sidebarName: {
+    marginLeft: '0.5rem',
+  },
+  submenuIcon: {
+    fontSize: '0.8rem',
+    display: 'inline-block',
+  },
+  submenuName: {
+    whiteSpace: 'nowrap',
+  },
+  closeBtn: {
+    position: 'absolute',
+    right: '0',
+    top: '4.7rem',
+    border: '1px solid #e5e7eb',
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    width: '1.5rem',
+    height: '1.5rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+    transform: 'translateX(50%)',
+    fontSize: '1.1rem',
+  },
+};
+
+export const Wrapper = ({ children }) => <div style={styles.wrapper}>{children}</div>;
+export const Sidebar = ({ children, isOpenMenu }) => (
+  <aside style={{ ...styles.sidebar, width: isOpenMenu ? "74px" : "268px" }}>{children}</aside>
+);
+export const SidebarTop = ({ children, isOpenMenu }) => (
+  <div style={{ ...styles.sidebarTop, marginLeft: isOpenMenu ? "" : "1rem" }}>{children}</div>
+);
+export const SidebarLogo = ({ children, onClick }) => (
+  <span style={styles.sidebarLogo} onClick={onClick}>{children}</span>
+);
+export const LogoName = ({ children, isOpenMenu }) => (
+  <p style={{ ...styles.logoName, display: isOpenMenu ? "none" : "" }}>{children}</p>
+);
+export const SidebarIcon = ({ children }) => <span style={styles.sidebarIcon}>{children}</span>;
+export const SidebarName = ({ children, isOpenMenu }) => (
+  <span style={{ ...styles.sidebarName, display: isOpenMenu ? "none" : "" }}>{children}</span>
+);
+export const SubmenuName = ({ children, isOpenMenu }) => (
+  <span style={{ ...styles.submenuName, display: isOpenMenu ? "none" : "" }}>{children}</span>
+);
+export const CollapsedDiv = ({ children, style, onClick, onMouseEnter, onMouseLeave }) => (
+  <div onClick={onClick} style={style} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    {children}
+  </div>
+);
+export const StyledUl = ({ children }) => <ul style={styles.styledUl}>{children}</ul>;
+export const ArrowWrapper = ({ children }) => <span style={styles.arrowWrapper}>{children}</span>;
+export const SubMenuMainTitle = ({ children, isMainElementActive, isOpenMenu }) => (
+  <span style={{ ...styles.subMenuMainTitle, fontWeight: isMainElementActive ? "500" : "400", display: isOpenMenu ? "none" : "" }}>{children}</span>
+);
+export const Divider = ({ isOpenMenu }) => (
+  <div style={{ ...styles.divider, width: getDividerWidth(isOpenMenu) }} />
+);
 
 const menuReducer = (state, action) => {
   switch (action.type) {
@@ -70,7 +205,7 @@ const SidebarMenu = ({ handleNavigation, isActive, items }) => {
       <Sidebar isOpenMenu={isOpenMenu}>
         <SidebarTop isOpenMenu={isOpenMenu}>
           <SidebarLogo onClick={toggleMenu}>
-            {isOpenMenu ? <BarsIcon data-id="barsIcon" /> : <CloseIcon data-id="closeButton" />}
+            {isOpenMenu ? <FaBars data-id="barsIcon" /> : <FaTimes data-id="closeButton" />}
           </SidebarLogo>
           <LogoName isOpenMenu={isOpenMenu}>Cerrar</LogoName>
         </SidebarTop>

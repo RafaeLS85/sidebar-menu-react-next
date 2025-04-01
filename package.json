@@ -1,6 +1,6 @@
 {
     "name": "sidebar-menu-fvg",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "A reusable sidebar menu component for React applications.",
     "main": "./build/index.js",
     "module": "./build/index.js",

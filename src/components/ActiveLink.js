@@ -1,6 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { getPointerEvents, styles } from "./SidebarMenu.styled";
+import { styles } from "./SidebarMenu";
+
+
+export const getPointerEvents = (hasPermission) => {
+  return hasPermission ? 'auto' : 'none';
+};
 
 function ActiveLink({
   children,
