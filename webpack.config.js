@@ -12,6 +12,7 @@ module.exports = {
       name: 'sidebar-menu-fvg',
       type: 'umd',
     },
+    globalObject: "this",
   },
   module: {
     rules: [
