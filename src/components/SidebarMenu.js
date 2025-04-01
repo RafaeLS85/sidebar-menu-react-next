@@ -144,7 +144,7 @@ export const Wrapper = ({ children, isOpenMenu }) => (
 );
 
 export const Sidebar = ({ children, isOpenMenu }) => (
-  <aside style={{ ...styles.sidebar, width: isOpenMenu ? "74px" : "268px" }}>
+  <aside style={{ ...styles.sidebar, width: isOpenMenu ? "57px" : "250px" }}>
     {children}
   </aside>
 );
@@ -196,13 +196,13 @@ const menuReducer = (state, action) => {
   }
 };
 
-const SidebarMenu = ({ handleNavigation, isActive, items }) => {
+const SidebarMenu = ({ handleNavigation, isActive, items, permissions }) => {
   const [state, dispatch] = useReducer(menuReducer, {
     isOpenMenu: true,
     items: items,
   });
   const { isOpenMenu, items: menuItems } = state;
-  const checkPermission = usePermissionOnMenu();
+  const checkPermission = usePermissionOnMenu(permissions);
 
   useEffect(() => {
     dispatch({ type: "UPDATE_ITEMS", payload: items });
@@ -269,6 +269,7 @@ const SidebarMenu = ({ handleNavigation, isActive, items }) => {
 SidebarMenu.propTypes = {
   handleNavigation: PropTypes.func.isRequired,
   isActive: PropTypes.func.isRequired,
+  permissions: PropTypes.arrayOf(PropTypes.string).isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
@@ -295,10 +296,10 @@ SubMenuButton.propTypes = {
   isOpenMenu: PropTypes.bool,
 };
 
-const SubMenu = ({ item, isOpenMenu, updateList, handleNavigation, isActive }) => {
+const SubMenu = ({ item, isOpenMenu, updateList, handleNavigation, isActive, permissions }) => {
   const isSubmenuActive = isActive(item.href || "", isOpenMenu);
   const isMainElementActive = isActive(item.href || "");
-  const hasPermission = usePermissionOnMenu();
+  const hasPermission = usePermissionOnMenu(permissions);
   const itemIsOpen = item.isOpen;
 
   const collapsedDivStyle = {
@@ -351,6 +352,7 @@ SubMenu.propTypes = {
   updateList: PropTypes.func.isRequired,
   handleNavigation: PropTypes.func.isRequired,
   isActive: PropTypes.func.isRequired,
+  permissions: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default SidebarMenu;
