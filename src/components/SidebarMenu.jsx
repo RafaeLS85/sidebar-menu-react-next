@@ -30,6 +30,7 @@ export const styles = {
     display: 'flex',
     cursor: 'pointer',
     height: '45px',
+    color: 'black'
   },
   collapsedDivHover: {
     backgroundColor: '#F0F0FA',
@@ -68,11 +69,13 @@ export const styles = {
   },
   sidebarLogo: {
     cursor: 'pointer',
+    color: 'gray'
   },
   sidebarTop: {
     width: 'max-content',
     display: 'flex',
     alignItems: 'center',
+    justifySelf: 'center',
     gap: '0.5rem',
     paddingBottom: '1rem',
     marginLeft: '1rem',
@@ -149,7 +152,7 @@ export const Sidebar = ({ children, isOpenMenu }) => (
   </aside>
 );
 export const SidebarTop = ({ children, isOpenMenu }) => (
-  <div style={{ ...styles.sidebarTop, marginLeft: isOpenMenu ? "" : "1rem" }}>{children}</div>
+  <div style={{ ...styles.sidebarTop, marginLeft: isOpenMenu ? "" : "1rem", justifySelf: isOpenMenu ? "center" : "" }}>{children}</div>
 );
 export const SidebarLogo = ({ children, onClick }) => (
   <span style={styles.sidebarLogo} onClick={onClick}>{children}</span>
