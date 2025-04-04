@@ -16,73 +16,54 @@ npm install sidebar-menu-fvg
 ## React.js Example (React Router)
 
 ```jsx
+import React from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
+import SidebarMenu, { SidebarItem } from 'sidebar-menu-fvg';
+import { FaHome, FaUser, FaCog } from 'react-icons/fa';
 
-import React, { useState } from 'react';
-import SidebarMenu, { MenuItem } from 'sidebar-menu-fvg';
-import { FaHome, FaUser, FaCog } from 'react-icons/fa'; // Example icons
-
-function App() {
-  const [activeLink, setActiveLink] = useState<string>('');
+const Layout = () => {
+  const navigate = useNavigate();
+  const [activeLink, setActiveLink] = React.useState<string>('');
 
   const handleNavigation = (href: string) => {
     setActiveLink(href);
     console.log(`Navigating to: ${href}`);
-    // Add your navigation logic here, e.g., using React Router
+    navigate(href);
   };
 
-  const isActive = (href: string, isSubmenu?: boolean) => {
-    return activeLink === href;
-  };
+  const isActive = (href: string) => activeLink === href;
 
-  const menuItems: MenuItem[] = [
-    {
-      name: 'Home',
-      href: '/',
-      icon: <FaHome />,
-      permissions: ['user', 'admin'],
-    },
-    {
-      name: 'Users',
-      href: '/users',
-      icon: <FaUser />,
-      permissions: ['admin'],
-    },
+  const menuItems: SidebarItem[] = [
+    { name: 'Home', href: '/', icon: <FaHome />, permissions: ['user', 'admin'] },
+    { name: 'Users', href: '/users', icon: <FaUser />, permissions: ['admin'] },
     {
       name: 'Settings',
       icon: <FaCog />,
       permissions: ['admin', 'user'],
+      href: '',
       submenu: [
-        {
-          name: 'Profile',
-          href: '/settings/profile',
-          permissions: ['admin', 'user'],
-        },
-        {
-          name: 'Security',
-          href: '/settings/security',
-          permissions: ['admin'],
-        },
+        { name: 'Profile', href: '/settings/profile', permissions: ['admin', 'user'], icon: <></> },
+        { name: 'Security', href: '/settings/security', permissions: ['admin'], icon: <></> },
       ],
     },
   ];
 
   return (
-    <div>
-      <SidebarMenu
-        handleNavigation={handleNavigation}
+    <div style={{ display: 'flex' }}>
+      <SidebarMenu 
+        handleNavigation={handleNavigation} 
         isActive={isActive}
-        items={menuItems}
+        items={menuItems} 
+        permissions={['admin', 'user']}
       />
-      {/* Your main content here */}
-      <main>
-        <h1>Main Content</h1>
-        <p>Current Active Link: {activeLink}</p>
+      <main style={{ flex: 1, padding: '1rem' }}>
+        <Outlet />
       </main>
     </div>
   );
-}
+};
 
-export default App;
+export default Layout;
 ```
 
 
